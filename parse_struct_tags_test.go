@@ -7,10 +7,21 @@ import (
 	"github.com/lutfiandri/go-specgen"
 )
 
+type EmbeddedStruct struct {
+	EmbeddedTag string `json:"embedded_tag" validate:"required"`
+}
+
+type ChildStruct struct {
+	ChildTag string `json:"child_tag" validate:"required"`
+}
+
 type TestStruct struct {
 	HasTags   string `json:"has_tags" validate:"required" params:"id"`
 	NoTags    string
 	OtherTags string `params:"id" query:"search"`
+
+	EmbeddedStruct
+	Child ChildStruct `json:"child" validate:"required"`
 }
 
 func TestExtractStructFieldTags(t *testing.T) {
@@ -53,6 +64,14 @@ func TestExtractStructTags(t *testing.T) {
 		"OtherTags": {
 			"params": "id",
 			"query":  "search",
+		},
+		"EmbeddedTag": {
+			"json":     "embedded_tag",
+			"validate": "required",
+		},
+		"Child": {
+			"json":     "child",
+			"validate": "required",
 		},
 	}
 

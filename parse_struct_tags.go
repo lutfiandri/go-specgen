@@ -36,10 +36,18 @@ func ExtractStructTags(structure any, tagKeys []string) []StructTags {
 
 	typ := val.Type()
 
-	structTags := make([]StructTags, 0, typ.NumField())
+	structTags := make([]StructTags, 0)
 
 	for i := 0; i < typ.NumField(); i++ {
 		field := typ.Field(i)
+
+		// Extract embedded structs
+		if field.Anonymous {
+			embeddedStructTags := ExtractStructTags(val.Field(i).Interface(), tagKeys)
+			structTags = append(structTags, embeddedStructTags...)
+			continue
+		}
+
 		fieldTags := ExtractStructFieldTags(field, tagKeys)
 		structTags = append(structTags, StructTags{Name: field.Name, Tags: fieldTags})
 	}
