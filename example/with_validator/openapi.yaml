@@ -1,0 +1,83 @@
+openapi: 3.0.3
+info:
+  description: A comprehensive API for managing users with CRUD operations
+  title: User Management API
+  version: 1.0.0
+paths:
+  /users:
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        "204":
+          description: No Content
+components:
+  schemas:
+    Address:
+      properties:
+        city:
+          type: string
+        state:
+          type: string
+        street:
+          type: string
+        zip:
+          type: string
+      required:
+      - street
+      - city
+      - state
+      - zip
+      type: object
+    CreateUserRequest:
+      properties:
+        addresses:
+          items:
+            $ref: '#/components/schemas/Address'
+          minItems: 1
+          nullable: true
+          type: array
+        age:
+          maximum: 120
+          minimum: 18
+          type: integer
+        birthday:
+          format: date-time
+          nullable: true
+          type: string
+        email:
+          format: email
+          maxLength: 100
+          minLength: 3
+          type: string
+        gender:
+          enum:
+          - male
+          - female
+          type: string
+        hobbies:
+          items:
+            type: string
+          maxItems: 10
+          minItems: 1
+          nullable: true
+          type: array
+        name:
+          type: string
+      required:
+      - name
+      - email
+      - age
+      - gender
+      - hobbies
+      - addresses
+      type: object
+  securitySchemes:
+    Bearer Auth:
+      bearerFormat: Bearer token authentication
+      description: ""
+      scheme: bearer
+      type: http

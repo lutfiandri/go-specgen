@@ -94,36 +94,19 @@ func main() {
 			Description: "Create a new user with the provided information",
 			Path:        "/users",
 			Method:      "POST",
-			Request: CreateUserRequest{
-				Name:  "John Doe",
-				Email: "john@example.com",
-				Age:   30,
-			},
+			Request:     CreateUserRequest{},
 			Responses: []specgen.RouteResponse{
 				{
 					StatusCode: 201,
-					Response: UserResponse{
-						ID:        1,
-						Name:      "John Doe",
-						Email:     "john@example.com",
-						Age:       30,
-						CreatedAt: "2024-01-01T00:00:00Z",
-					},
+					Response:   UserResponse{},
 				},
 				{
 					StatusCode: 400,
-					Response: ErrorResponse{
-						Message: "Invalid input",
-						Code:    "VALIDATION_ERROR",
-						Details: "Email format is invalid",
-					},
+					Response:   ErrorResponse{},
 				},
 				{
 					StatusCode: 401,
-					Response: ErrorResponse{
-						Message: "Unauthorized",
-						Code:    "UNAUTHORIZED",
-					},
+					Response:   ErrorResponse{},
 				},
 			},
 		},
@@ -133,33 +116,19 @@ func main() {
 			Description: "Retrieve a specific user by their ID",
 			Path:        "/users/{id}",
 			Method:      "GET",
-			Request: GetUserParams{
-				ID: 1,
-			},
+			Request:     GetUserParams{},
 			Responses: []specgen.RouteResponse{
 				{
 					StatusCode: 200,
-					Response: UserResponse{
-						ID:        1,
-						Name:      "John Doe",
-						Email:     "john@example.com",
-						Age:       30,
-						CreatedAt: "2024-01-01T00:00:00Z",
-					},
+					Response:   UserResponse{},
 				},
 				{
 					StatusCode: 401,
-					Response: ErrorResponse{
-						Message: "Unauthorized",
-						Code:    "UNAUTHORIZED",
-					},
+					Response:   ErrorResponse{},
 				},
 				{
 					StatusCode: 404,
-					Response: ErrorResponse{
-						Message: "User not found",
-						Code:    "NOT_FOUND",
-					},
+					Response:   ErrorResponse{},
 				},
 			},
 		},
@@ -172,44 +141,23 @@ func main() {
 			Request: struct {
 				ID int `path:"id" required:"true"`
 				UpdateUserRequest
-			}{
-				ID: 1,
-				UpdateUserRequest: UpdateUserRequest{
-					Name:  stringPtr("Jane Doe"),
-					Email: stringPtr("jane@example.com"),
-				},
-			},
+			}{},
 			Responses: []specgen.RouteResponse{
 				{
 					StatusCode: 200,
-					Response: UserResponse{
-						ID:        1,
-						Name:      "Jane Doe",
-						Email:     "jane@example.com",
-						Age:       30,
-						CreatedAt: "2024-01-01T00:00:00Z",
-					},
+					Response:   UserResponse{},
 				},
 				{
 					StatusCode: 400,
-					Response: ErrorResponse{
-						Message: "Invalid input",
-						Code:    "VALIDATION_ERROR",
-					},
+					Response:   ErrorResponse{},
 				},
 				{
 					StatusCode: 401,
-					Response: ErrorResponse{
-						Message: "Unauthorized",
-						Code:    "UNAUTHORIZED",
-					},
+					Response:   ErrorResponse{},
 				},
 				{
 					StatusCode: 404,
-					Response: ErrorResponse{
-						Message: "User not found",
-						Code:    "NOT_FOUND",
-					},
+					Response:   ErrorResponse{},
 				},
 			},
 		},
@@ -219,27 +167,19 @@ func main() {
 			Description: "Delete a user by their ID",
 			Path:        "/users/{id}",
 			Method:      "DELETE",
-			Request: GetUserParams{
-				ID: 1,
-			},
+			Request:     GetUserParams{},
 			Responses: []specgen.RouteResponse{
 				{
 					StatusCode: 204,
-					Response:   struct{}{},
+					Response:   nil,
 				},
 				{
 					StatusCode: 401,
-					Response: ErrorResponse{
-						Message: "Unauthorized",
-						Code:    "UNAUTHORIZED",
-					},
+					Response:   ErrorResponse{},
 				},
 				{
 					StatusCode: 404,
-					Response: ErrorResponse{
-						Message: "User not found",
-						Code:    "NOT_FOUND",
-					},
+					Response:   ErrorResponse{},
 				},
 			},
 		},
@@ -253,9 +193,4 @@ func main() {
 
 	log.Printf("✅ OpenAPI specification generated successfully!\n")
 	log.Printf("📄 Output file: %s\n", outputFile)
-}
-
-// Helper function to create string pointers
-func stringPtr(s string) *string {
-	return &s
 }
