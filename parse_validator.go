@@ -37,6 +37,12 @@ func ParseValidatorV10(reflector *openapi3.Reflector, structure any) {
 					params.PropertySchema.Enum = enumValues
 				}
 
+				// format
+				if validationInfo.Format != "" {
+					format := validationInfo.Format
+					params.PropertySchema.Format = &format
+				}
+
 				return nil
 			},
 		),
@@ -45,6 +51,7 @@ func ParseValidatorV10(reflector *openapi3.Reflector, structure any) {
 
 type ValidationInfo struct {
 	Required bool
+	Format   string // email, uri, uuid, date-time
 	OneOf    []string
 }
 
@@ -61,11 +68,25 @@ func ParseValidatorV10Tag(validateTag string) ValidationInfo {
 		// Check for required
 		if part == "required" {
 			info.Required = true
+			continue
 		}
 
 		// Check for oneof
 		if enumStr, ok := strings.CutPrefix(part, "oneof="); ok {
 			info.OneOf = strings.Fields(enumStr)
+			continue
+		}
+
+		// Check for format validators
+		switch part {
+		case "email":
+			info.Format = "email"
+		case "url":
+			info.Format = "uri"
+		case "uuid":
+			info.Format = "uuid"
+		case "datetime":
+			info.Format = "date-time"
 		}
 	}
 
