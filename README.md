@@ -146,11 +146,31 @@ route := specgen.Route{
 }
 ```
 
+## ✅ Validation
+
+go-specgen supports parsing validation tags from the `validate` struct tag, following the [go-playground/validator](https://github.com/go-playground/validator) v10 format. These validators are automatically converted to OpenAPI schema constraints.
+
+### Example
+
+```go
+type CreateUserRequest struct {
+	Name     string   `json:"name" validate:"required,min=3,max=50"`
+	Email    string   `json:"email" validate:"required,email"`
+	Age      int      `json:"age" validate:"required,min=18,max=120"`
+	Score    float64  `json:"score" validate:"gte=0,lte=100"`
+	Gender   string   `json:"gender" validate:"required,oneof=male female"`
+	Tags     []string `json:"tags" validate:"min=1,max=10"`
+	Password string   `json:"password" validate:"required,len=8"`
+}
+```
+
+For a complete reference of all supported validator tags, see [VALIDATOR.md](VALIDATOR.md).
+
 ## 🗺️ Roadmap
 
 - [x] Generate OpenAPI in YAML
 - [ ] Generate OpenAPI in JSON
-- [ ] Parse request struct that using `github.com/go-playground/validator`
+- [x] Parse request struct that using `github.com/go-playground/validator`
 - [ ] Support for query parameters and path parameters parsing
 - [ ] Trim and prefix request/response schema names
 - [ ] Support for request headers
