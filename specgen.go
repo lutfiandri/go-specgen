@@ -33,6 +33,8 @@ func GenerateOpenAPISpec(config SpecConfig, outputFile string, routes []Route) e
 	}
 
 	for _, route := range routes {
+		ParseValidatorV10(reflector, route.Request)
+
 		op, err := reflector.NewOperationContext(route.Method, route.Path)
 		if err != nil {
 			return fmt.Errorf("failed to create operation context: %w", err)
