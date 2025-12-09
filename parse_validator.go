@@ -21,6 +21,13 @@ func ParseValidatorV10(reflector *openapi3.Reflector, structure any) {
 				field := params.Field
 				validationInfo := ParseValidatorV10Tag(field.Tag.Get(validationTagKey))
 
+				// required
+				if validationInfo.Required {
+					requiredFields := params.ParentSchema.Required
+					requiredFields = append(requiredFields, params.Name)
+					params.ParentSchema.WithRequired(requiredFields...)
+				}
+
 				// enum
 				if len(validationInfo.OneOf) > 0 {
 					enumValues := make([]any, len(validationInfo.OneOf))
