@@ -1,0 +1,218 @@
+openapi: 3.0.3
+info:
+  description: A comprehensive API for managing users with CRUD operations
+  title: User Management API
+  version: 1.0.0
+paths:
+  /users:
+    get:
+      parameters:
+      - in: query
+        name: page
+        schema:
+          default: 1
+          minimum: 1
+          type: integer
+      - in: query
+        name: limit
+        schema:
+          default: 10
+          maximum: 100
+          minimum: 1
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UsersListResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Unauthorized
+    post:
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateUserRequest'
+      responses:
+        "201":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+          description: Created
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Unauthorized
+  /users/{id}:
+    delete:
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "204":
+          description: No Content
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Not Found
+    get:
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+          description: OK
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Not Found
+    put:
+      parameters:
+      - in: path
+        name: id
+        required: true
+        schema:
+          type: integer
+      requestBody:
+        content:
+          application/json:
+            schema:
+              properties:
+                age:
+                  maximum: 120
+                  minimum: 18
+                  nullable: true
+                  type: integer
+                email:
+                  format: email
+                  nullable: true
+                  type: string
+                name:
+                  nullable: true
+                  type: string
+              type: object
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserResponse'
+          description: OK
+        "400":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Bad Request
+        "401":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Unauthorized
+        "404":
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+          description: Not Found
+components:
+  schemas:
+    CreateUserRequest:
+      properties:
+        age:
+          maximum: 120
+          minimum: 18
+          type: integer
+        email:
+          format: email
+          type: string
+        name:
+          type: string
+      required:
+      - name
+      - email
+      type: object
+    ErrorResponse:
+      properties:
+        code:
+          type: string
+        details:
+          type: string
+        message:
+          type: string
+      type: object
+    UserResponse:
+      properties:
+        age:
+          type: integer
+        created_at:
+          type: string
+        email:
+          type: string
+        id:
+          type: integer
+        name:
+          type: string
+      type: object
+    UsersListResponse:
+      properties:
+        limit:
+          type: integer
+        page:
+          type: integer
+        total:
+          type: integer
+        users:
+          items:
+            $ref: '#/components/schemas/UserResponse'
+          nullable: true
+          type: array
+      type: object
+  securitySchemes:
+    Bearer Auth:
+      bearerFormat: Bearer token authentication
+      description: ""
+      scheme: bearer
+      type: http
